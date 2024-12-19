@@ -12,6 +12,49 @@
             background-color: #f2f2f2;
             text-align: center;
         }
+        .history-bar {
+            position: fixed; /* Dikey barın sabit kalması için */
+            top: 100px; /* Header yüksekliğine göre ayarla */
+            left: 0;
+            width: 200px;
+            height: calc(100% - 100px); /* Header'den sonra kalan kısmı kapsasın */
+            background-color: black;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 2px solid #333;
+            overflow-y: auto;
+        }
+        .history-bar h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .history-bar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .history-bar ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .history-bar ul li span {
+            flex-grow: 1;
+            color: white;
+        }
+        .history-bar ul li button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .history-bar ul li button:hover {
+            color: red;
+        }
         .search-container {
             max-width: 1000px;
             width: 90%;
@@ -24,13 +67,6 @@
         }
         .search-container h1 {
             margin-bottom: 20px;
-        }
-        .search-results input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: none;
         }
         .search-results ul {
             list-style: none;
@@ -48,21 +84,21 @@
             border-radius: 5px;
             margin-right: 10px;
         }
-        .search-results li a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
-    <%- include('header') %>
+    <%- include('header') %> <!-- Header sabit kalacak -->
+
+    <div class="history-bar">
+        <h3>Son Aranan Kelimeler:</h3>
+        <ul id="historyList"></ul>
+    </div>
 
     <div class="search-container">
         <h1>Oyun Ara</h1>
         <div class="search-results">
             <input type="text" id="searchInput" placeholder="Oyun ara..." oninput="handleSearch()">
-            <ul id="searchResults">
-                <!-- Dinamik olarak eklenecek -->
-            </ul>
+            <ul id="searchResults"></ul>
         </div>
     </div>
 
@@ -88,9 +124,6 @@
             resultsContainer.innerHTML = '';
             searchResults.forEach(result => {
                 const li = document.createElement('li');
-                li.style.display = 'flex';
-                li.style.alignItems = 'center';
-                li.style.marginBottom = '10px';
 
                 const img = document.createElement('img');
                 img.src = result.image;
@@ -98,19 +131,69 @@
                 img.style.width = '50px';
                 img.style.height = '50px';
                 img.style.marginRight = '10px';
-                img.style.borderRadius = '5px';
 
                 const link = document.createElement('a');
                 link.href = `/games/${result.id}`;
                 link.textContent = result.name;
                 link.style.color = 'white';
                 link.style.textDecoration = 'none';
+                link.onclick = () => addToHistory(result.name);
 
                 li.appendChild(img);
                 li.appendChild(link);
                 resultsContainer.appendChild(li);
             });
         }
+
+        function addToHistory(name) {
+            fetch('/add-to-history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    updateHistory(data.recentSearches);
+                });
+        }
+
+        function removeFromHistory(name) {
+            fetch('/remove-from-history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    updateHistory(data.recentSearches);
+                });
+        }
+
+        function updateHistory(recentSearches) {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            recentSearches.forEach(name => {
+                const li = document.createElement('li');
+                const span = document.createElement('span');
+                span.textContent = name;
+
+                const button = document.createElement('button');
+                button.textContent = 'X';
+                button.onclick = () => removeFromHistory(name);
+
+                li.appendChild(span);
+                li.appendChild(button);
+                historyList.appendChild(li);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/history')
+                .then(response => response.json())
+                .then(data => {
+                    updateHistory(data.recentSearches);
+                });
+        });
     </script>
 </body>
 </html>

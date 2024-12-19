@@ -13,6 +13,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/games', express.static(path.join(__dirname, 'games')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+// Temporary storage for recent searches
+const recentSearches = [];
+
 // Route for game pages
 app.get('/games/:game', (req, res) => {
     const gameFolder = path.join(__dirname, 'games', req.params.game);
@@ -73,6 +76,34 @@ app.get('/search-api', (req, res) => {
     res.json({
         results: filteredGames,
     });
+});
+
+// Add to history API
+app.post('/add-to-history', express.json(), (req, res) => {
+    const { name } = req.body;
+
+    if (!recentSearches.includes(name)) {
+        recentSearches.push(name);
+    }
+
+    res.json({ success: true, recentSearches });
+});
+
+// Remove from history API
+app.post('/remove-from-history', express.json(), (req, res) => {
+    const { name } = req.body;
+
+    const index = recentSearches.indexOf(name);
+    if (index !== -1) {
+        recentSearches.splice(index, 1);
+    }
+
+    res.json({ success: true, recentSearches });
+});
+
+// Get history API
+app.get('/history', (req, res) => {
+    res.json({ recentSearches });
 });
 
 // Start server
