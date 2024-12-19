@@ -41,6 +41,15 @@
             padding: 10px;
             margin: 5px 0;
             border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .search-results li img {
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .search-results li a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -58,7 +67,6 @@
     </div>
 
     <script>
-        const recentSearches = [];
         let searchResults = [];
 
         function handleSearch() {
@@ -80,7 +88,26 @@
             resultsContainer.innerHTML = '';
             searchResults.forEach(result => {
                 const li = document.createElement('li');
-                li.textContent = result.name;
+                li.style.display = 'flex';
+                li.style.alignItems = 'center';
+                li.style.marginBottom = '10px';
+
+                const img = document.createElement('img');
+                img.src = result.image;
+                img.alt = result.name;
+                img.style.width = '50px';
+                img.style.height = '50px';
+                img.style.marginRight = '10px';
+                img.style.borderRadius = '5px';
+
+                const link = document.createElement('a');
+                link.href = `/games/${result.id}`;
+                link.textContent = result.name;
+                link.style.color = 'white';
+                link.style.textDecoration = 'none';
+
+                li.appendChild(img);
+                li.appendChild(link);
                 resultsContainer.appendChild(li);
             });
         }

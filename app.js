@@ -47,27 +47,31 @@ app.get('/search', (req, res) => {
 });
 
 // Search API
-const games = [
-    { id: 1, name: 'Red Dead Redemption 2' },
-    { id: 2, name: 'Red Dead Redemption' },
-    { id: 3, name: 'Red Dead Online' },
-    { id: 4, name: 'Minecraft' },
-    { id: 5, name: 'Fallout' },
-    { id: 6, name: 'Skyrim' },
-    { id: 7, name: 'Cyberpunk 2077' },
-];
-
 app.get('/search-api', (req, res) => {
-    const query = req.query.q.toLowerCase();
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = 4;
+    const query = req.query.q ? req.query.q.toLowerCase() : '';
 
+    // /games klasöründeki oyunları oku
+    const gameFolders = fs.readdirSync(path.join(__dirname, 'games'));
+    const games = gameFolders.map(folder => {
+        const gamePath = path.join(__dirname, 'games', folder);
+        const namePath = path.join(gamePath, 'name.txt');
+        const headerImagePath = path.join(gamePath, 'header.jpg');
+
+        if (fs.existsSync(namePath)) {
+            const name = fs.readFileSync(namePath, 'utf-8').trim();
+            const headerImage = fs.existsSync(headerImagePath)
+                ? `/games/${folder}/header.jpg` // Görsel yolu
+                : '/public/images/default-header.jpg'; // Varsayılan görsel
+            return { id: folder, name, image: headerImage };
+        }
+        return null;
+    }).filter(game => game !== null);
+
+    // Query ile eşleşen oyunları filtrele
     const filteredGames = games.filter(game => game.name.toLowerCase().includes(query));
-    const paginatedResults = filteredGames.slice((page - 1) * pageSize, page * pageSize);
 
     res.json({
-        results: paginatedResults,
-        hasMore: filteredGames.length > page * pageSize,
+        results: filteredGames,
     });
 });
 
