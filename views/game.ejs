@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= name %></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .language-select, .support-button, .wishlist-button, .search-button, .cart-button, .details button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .language-select:hover, .support-button:hover, .wishlist-button:hover, .search-button:hover, .cart-button:hover, .details button:hover {
+            background-color: #333;
+        }
+        .header-logo img {
+            max-height: 50px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .slider-container {
+            position: relative;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .main-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        .thumbnail {
+            width: 100px;
+            height: auto;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: border 0.3s;
+        }
+        .thumbnail:hover, .thumbnail.selected {
+            border: 2px solid black;
+        }
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .nav-arrow:hover {
+            background-color: black;
+        }
+        .nav-arrow.left {
+            left: -40px;
+        }
+        .nav-arrow.right {
+            right: -40px;
+        }
+        .details {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .details p {
+            line-height: 1.6;
+            margin: 0 auto;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <h1><%= name %> (<%= price %> TL)</h1>
+
+    <div class="slider-container">
+        <button class="nav-arrow left" onclick="prevImage()">&#10094;</button>
+        <img id="mainImage" src="<%= images[0] %>" class="main-image" alt="Main image">
+        <button class="nav-arrow right" onclick="nextImage()">&#10095;</button>
+
+        <div class="thumbnail-container">
+            <% images.forEach((image, index) => { %>
+                <img src="<%= image %>" class="thumbnail" onclick="selectImage(<%= index %>)" id="thumb<%= index %>">
+            <% }); %>
+        </div>
+    </div>
+
+    <div class="details">
+        <p><%= description %></p>
+        <button>Sepete Ekle</button>
+        <button>İstek Listesine Ekle</button>
+    </div>
+
+    <script>
+        const images = <%- JSON.stringify(images) %>;
+        let currentIndex = 0;
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateMainImage();
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateMainImage();
+        }
+
+        function selectImage(index) {
+            currentIndex = index;
+            updateMainImage();
+        }
+
+        function updateMainImage() {
+            document.getElementById('mainImage').src = images[currentIndex];
+            document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
+                thumb.classList.toggle('selected', index === currentIndex);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMainImage();
+        });
+    </script>
+</body>
+</html>

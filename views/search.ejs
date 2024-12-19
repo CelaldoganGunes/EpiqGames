@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arama Sayfası</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .search-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .search-container h1 {
+            margin-bottom: 20px;
+        }
+        .search-results input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+        }
+        .search-results ul {
+            list-style: none;
+            padding: 0;
+        }
+        .search-results li {
+            background: #333;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .search-results button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-results button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <div class="search-container">
+        <h1>Oyun Ara</h1>
+        <div class="search-results">
+            <input type="text" id="searchInput" placeholder="Oyun ara..." oninput="handleSearch()">
+            <ul id="searchResults">
+                <!-- Dinamik olarak eklenecek -->
+            </ul>
+            <button id="loadMoreBtn" style="display: none;" onclick="loadMore()">Daha fazla Göster</button>
+        </div>
+    </div>
+
+    <script>
+        const recentSearches = [];
+        let searchResults = [];
+        let currentPage = 1;
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (query) {
+                fetch(`/search-api?q=${query}&page=${currentPage}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchResults = data.results;
+                        displayResults();
+                        document.getElementById('loadMoreBtn').style.display = data.hasMore ? 'block' : 'none';
+                    });
+            } else {
+                document.getElementById('searchResults').innerHTML = '';
+                document.getElementById('loadMoreBtn').style.display = 'none';
+            }
+        }
+
+        function displayResults() {
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = '';
+            searchResults.forEach(result => {
+                const li = document.createElement('li');
+                li.textContent = result.name;
+                resultsContainer.appendChild(li);
+            });
+        }
+
+        function loadMore() {
+            currentPage++;
+            handleSearch();
+        }
+    </script>
+</body>
+</html>

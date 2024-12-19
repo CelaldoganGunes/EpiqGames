@@ -1,0 +1,84 @@
+<div class="header">
+    <div class="header-container">
+        <div class="header-left">
+            <select class="language-select">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <div class="header-logo">
+            <img src="/public/images/logo.png" alt="Epic Games Logo">
+        </div>
+        <div class="header-right">
+            <button class="support-button">Destek Al</button>
+        </div>
+    </div>
+</div>
+<div class="button-group">
+    <button class="wishlist-button">İstek Listesi</button>
+    <a href="/search" class="search-button">Arama Yap</a>
+    <button class="cart-button">Sepetim</button>
+</div>
+
+<style>
+    .header {
+        background-color: #e1e1e1;
+        border-bottom: 2px solid #000;
+        padding: 15px 20px;
+    }
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .header-left, .header-right {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .header-left {
+        left: 0;
+    }
+    .header-right {
+        right: 0;
+    }
+    .header-logo img {
+        height: 50px;
+    }
+    .language-select, .support-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .language-select:hover, .support-button:hover {
+        background-color: #333;
+    }
+    .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .wishlist-button, .cart-button, .search-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        background-color: black;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .wishlist-button:hover, .cart-button:hover, .search-button:hover {
+        background-color: #333;
+    }
+    .search-button {
+        text-decoration: none;
+    }
+</style>
