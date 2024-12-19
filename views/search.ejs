@@ -42,18 +42,6 @@
             margin: 5px 0;
             border-radius: 5px;
         }
-        .search-results button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .search-results button:hover {
-            background-color: #555;
-        }
     </style>
 </head>
 <body>
@@ -66,28 +54,24 @@
             <ul id="searchResults">
                 <!-- Dinamik olarak eklenecek -->
             </ul>
-            <button id="loadMoreBtn" style="display: none;" onclick="loadMore()">Daha fazla Göster</button>
         </div>
     </div>
 
     <script>
         const recentSearches = [];
         let searchResults = [];
-        let currentPage = 1;
 
         function handleSearch() {
             const query = document.getElementById('searchInput').value.trim();
             if (query) {
-                fetch(`/search-api?q=${query}&page=${currentPage}`)
+                fetch(`/search-api?q=${query}`)
                     .then(response => response.json())
                     .then(data => {
                         searchResults = data.results;
                         displayResults();
-                        document.getElementById('loadMoreBtn').style.display = data.hasMore ? 'block' : 'none';
                     });
             } else {
                 document.getElementById('searchResults').innerHTML = '';
-                document.getElementById('loadMoreBtn').style.display = 'none';
             }
         }
 
@@ -99,11 +83,6 @@
                 li.textContent = result.name;
                 resultsContainer.appendChild(li);
             });
-        }
-
-        function loadMore() {
-            currentPage++;
-            handleSearch();
         }
     </script>
 </body>
