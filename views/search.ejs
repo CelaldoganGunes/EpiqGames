@@ -41,6 +41,7 @@
             background-color: #333;
             padding: 10px;
             border-radius: 5px;
+            cursor: pointer;
         }
         .history-bar ul li span {
             flex-grow: 1;
@@ -68,6 +69,15 @@
         .search-container h1 {
             margin-bottom: 20px;
         }
+        .search-container input {
+            width: 80%;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
         .search-results ul {
             list-style: none;
             padding: 0;
@@ -87,10 +97,10 @@
     </style>
 </head>
 <body>
-    <%- include('header') %> <!-- Header sabit kalacak -->
+    <%- include('header') %>
 
     <div class="history-bar">
-        <h3>Son Aranan Kelimeler:</h3>
+        <h3>Son Aranan Oyunlar:</h3>
         <ul id="historyList"></ul>
     </div>
 
@@ -137,7 +147,12 @@
                 link.textContent = result.name;
                 link.style.color = 'white';
                 link.style.textDecoration = 'none';
-                link.onclick = () => addToHistory(result.name);
+
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    addToHistory(result.name);
+                    window.location.href = link.href;
+                };
 
                 li.appendChild(img);
                 li.appendChild(link);
@@ -176,6 +191,10 @@
                 const li = document.createElement('li');
                 const span = document.createElement('span');
                 span.textContent = name;
+                span.onclick = () => {
+                    document.getElementById('searchInput').value = name;
+                    handleSearch();
+                };
 
                 const button = document.createElement('button');
                 button.textContent = 'X';
