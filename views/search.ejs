@@ -13,11 +13,11 @@
             text-align: center;
         }
         .history-bar {
-            position: fixed; /* Dikey barın sabit kalması için */
-            top: 100px; /* Header yüksekliğine göre ayarla */
+            position: fixed;
+            top: 100px;
             left: 0;
             width: 200px;
-            height: calc(100% - 100px); /* Header'den sonra kalan kısmı kapsasın */
+            height: calc(100% - 100px);
             background-color: black;
             color: white;
             padding: 20px;
@@ -187,7 +187,7 @@
         function updateHistory(recentSearches) {
             const historyList = document.getElementById('historyList');
             historyList.innerHTML = '';
-            recentSearches.forEach(name => {
+            recentSearches.reverse().forEach(name => { // Reverse işlemi burada yapıldı
                 const li = document.createElement('li');
                 const span = document.createElement('span');
                 span.textContent = name;
