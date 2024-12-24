@@ -159,6 +159,9 @@ app.get('/register', (req, res) => {
     res.render('register'); // register.ejs
 });
 
+app.get('/account', (req, res) => {
+    res.render('account'); // register.ejs
+});
 
 // Start server
 app.listen(PORT, () => {
