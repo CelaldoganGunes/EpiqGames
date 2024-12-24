@@ -37,7 +37,7 @@ app.get('/games/:game', (req, res) => {
             .map(file => `/games/${req.params.game}/${file}`);
 
         // Render game page
-        res.render('game', { name, price, description, images });
+        res.render('game', { name, price, description, images, gameId: req.params.game });
     } catch (error) {
         console.error('Error loading game data:', error);
         res.status(500).send('Internal Server Error');
@@ -105,6 +105,51 @@ app.post('/remove-from-history', express.json(), (req, res) => {
 app.get('/history', (req, res) => {
     res.json({ recentSearches });
 });
+
+// Temporary storage for cart items
+const cart = [];
+
+// Add to cart API
+app.post('/add-to-cart', express.json(), (req, res) => {
+    const { gameId } = req.body;
+
+    if (!cart.includes(gameId)) {
+        cart.push(gameId);
+        return res.json({ success: true, message: 'Oyun sepete eklendi!', cart });
+    }
+
+    res.json({ success: false, message: 'Oyun zaten sepette!', cart });
+});
+
+
+app.get('/cart', (req, res) => {
+    try {
+        const cartItems = cart.map((folderName) => {
+            const gameFolder = path.join(__dirname, 'games', folderName); // Doğru klasör adı kullanılıyor
+            if (!fs.existsSync(gameFolder)) {
+                throw new Error(`Game folder not found: ${gameFolder}`);
+            }
+
+            const name = fs.readFileSync(path.join(gameFolder, 'name.txt'), 'utf-8').trim();
+            const price = parseInt(fs.readFileSync(path.join(gameFolder, 'price.txt'), 'utf-8'), 10);
+            const headerImage = `/games/${folderName}/header.jpg`;
+            const tax = Math.round(price * 0.1); // Vergi oranı %10
+
+            return { id: folderName, name, price, headerImage, tax };
+        });
+
+        // Toplam vergi ve toplam tutarı hesapla
+        const totalTax = cartItems.reduce((sum, item) => sum + item.tax, 0);
+        const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+
+        res.render('cart', { cartItems, totalTax, totalPrice });
+    } catch (error) {
+        console.error('Error rendering cart page:', error.message);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 
 // Start server
 app.listen(PORT, () => {

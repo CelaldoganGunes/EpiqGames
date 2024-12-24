@@ -117,7 +117,7 @@
 
     <div class="details">
         <p><%= description %></p>
-        <button>Sepete Ekle</button>
+        <button onclick="addToCart('<%= gameId %>')">Sepete Ekle</button>
         <button>İstek Listesine Ekle</button>
     </div>
 
@@ -150,6 +150,22 @@
         document.addEventListener('DOMContentLoaded', () => {
             updateMainImage();
         });
+
+        function addToCart(gameId) {
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ gameId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Onay veya hata mesajını göster
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                alert('Sepete eklenirken bir hata oluştu.');
+            });
+        }
     </script>
 </body>
 </html>

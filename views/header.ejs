@@ -17,7 +17,7 @@
 <div class="button-group">
     <button class="wishlist-button">İstek Listesi</button>
     <a href="/search" class="search-button">Oyun Ara</a>
-    <button class="cart-button">Sepetim</button>
+    <a href="/cart" class="cart-button">Sepet</a>
 </div>
 
 <style>
@@ -73,12 +73,11 @@
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        text-decoration: none;
+        text-align: center;
         transition: background-color 0.3s ease;
     }
     .wishlist-button:hover, .cart-button:hover, .search-button:hover {
         background-color: #333;
-    }
-    .search-button {
-        text-decoration: none;
     }
 </style>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sepetim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .header {
+            background-color: #e1e1e1;
+            border-bottom: 2px solid #000;
+            padding: 15px 20px;
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-logo img {
+            height: 50px;
+        }
+        .button-group button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #333;
+        }
+        .cart-summary {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .cart-summary h1 {
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+            margin-left: 20px;
+            text-align: left;
+        }
+        .cart-item-price {
+            text-align: right;
+        }
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .payment-section {
+            margin-top: 30px;
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .payment-section label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        .payment-section input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .complete-payment {
+            text-align: center;
+        }
+        .complete-payment button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .complete-payment button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <%- include('header') %>
+
+    <div class="cart-summary">
+        <h1>Sepet Özeti</h1>
+        <% cartItems.forEach(item => { %>
+            <div class="cart-item">
+                <img src="<%= item.headerImage %>" alt="<%= item.name %>">
+                <div class="cart-item-details">
+                    <h2><%= item.name %></h2>
+                    <p><%= item.price %> TL</p>
+                    <p>Vergi: <%= item.tax %> TL</p>
+                </div>
+            </div>
+        <% }); %>
+        <div class="total">
+            <p>Toplam Vergi: <%= totalTax %> TL</p>
+            <p>Toplam Tutar: <%= totalPrice + totalTax %> TL</p>
+        </div>
+    </div>
+
+    <div class="payment-section">
+        <h2>Kart Bilgileri</h2>
+        <label for="cardNumber">Kart Numarası:</label>
+        <input type="text" id="cardNumber" placeholder="Kart numarasını girin">
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="CVV kodunu girin">
+        <label for="cardName">Kart Sahibi Adı:</label>
+        <input type="text" id="cardName" placeholder="Adınızı girin">
+        <label for="expiryDate">Son Kullanma Tarihi:</label>
+        <input type="text" id="expiryDate" placeholder="MM/YYYY">
+        <div class="complete-payment">
+            <button onclick="completePayment()">Ödemeyi Tamamla</button>
+        </div>
+    </div>
+
+    <script>
+        function completePayment() {
+            alert('Ödeme işlemi tamamlandı!');
+        }
+    </script>
+</body>
+</html>
