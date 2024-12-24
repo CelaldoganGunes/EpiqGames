@@ -154,6 +154,12 @@ app.post('/clear-cart', (req, res) => {
     res.json({ success: true });
 });
 
+// Render the registration page
+app.get('/register', (req, res) => {
+    res.render('register'); // register.ejs
+});
+
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

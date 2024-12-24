@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .register-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .register-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            text-align: left;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group .example {
+            font-size: 12px;
+            color: gray;
+            margin-top: 5px;
+            text-align: left;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+        .checkbox-group label {
+            text-align: left;
+            font-size: 14px;
+        }
+        .checkbox-group a {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .register-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background-color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .register-button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        .info-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: gray;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <%- include('header') %>
+
+    <div class="register-container">
+        <h1>Kayıt Ol</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="country">Ülkeniz:</label>
+                <select id="country" required>
+                    <option value="">Seçin</option>
+                    <option value="Türkiye">Türkiye</option>
+                    <option value="ABD">ABD</option>
+                    <option value="Almanya">Almanya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="firstName">Adınız:</label>
+                <input type="text" id="firstName" placeholder="Adınızı girin" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Soyadınız:</label>
+                <input type="text" id="lastName" placeholder="Soyadınızı girin" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-Posta Adresiniz:</label>
+                <input type="email" id="email" placeholder="E-Posta adresinizi girin" required>
+                <p class="example">Örnek: celal@gmail.com</p>
+            </div>
+            <div class="form-group">
+                <label for="username">Kullanıcı Adınız:</label>
+                <input type="text" id="username" placeholder="Kullanıcı adınızı girin" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifreniz:</label>
+                <input type="password" id="password" placeholder="Şifrenizi girin" required>
+                <p class="example" id="passwordStrength">Şifrenizin Gücü: %0</p>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="newsletter">
+                <label for="newsletter">Bana Epic Games’ten haberleri gönder.</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">Sözleşmeyi okudum ve onaylıyorum. <a href="#">Okumak için tıklayın.</a></label>
+            </div>
+            <button type="submit" class="register-button" disabled>Kayıt olmak için tıklayınız.</button>
+        </form>
+        <p class="info-text">Butona tıklayabilmek için tüm alanları doldurun.</p>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const submitButton = document.querySelector('.register-button');
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        form.addEventListener('input', () => {
+            const country = document.getElementById('country').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const terms = document.getElementById('terms').checked;
+
+            // Check if all fields are valid
+            if (country && firstName && lastName && email && username && password && terms) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        });
+
+        passwordInput.addEventListener('input', () => {
+            const strength = Math.min(passwordInput.value.length * 10, 100);
+            passwordStrength.textContent = `Şifrenizin Gücü: %${strength}`;
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Kayıt başarılı!');
+        });
+    </script>
+</body>
+</html>
