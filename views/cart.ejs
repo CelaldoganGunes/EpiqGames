@@ -12,32 +12,6 @@
             background-color: #f2f2f2;
             text-align: center;
         }
-        .header {
-            background-color: #e1e1e1;
-            border-bottom: 2px solid #000;
-            padding: 15px 20px;
-        }
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header-logo img {
-            height: 50px;
-        }
-        .button-group button {
-            padding: 10px 20px;
-            font-size: 14px;
-            background-color: black;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .button-group button:hover {
-            background-color: #333;
-        }
         .cart-summary {
             max-width: 800px;
             margin: 20px auto;
@@ -67,9 +41,6 @@
             margin-left: 20px;
             text-align: left;
         }
-        .cart-item-price {
-            text-align: right;
-        }
         .total {
             font-size: 18px;
             font-weight: bold;
@@ -85,21 +56,31 @@
             margin: 20px auto;
         }
         .payment-section label {
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin: 10px 0 5px;
             font-weight: bold;
         }
-        .payment-section input {
-            width: 100%;
+        .payment-section input,
+        .payment-section select {
+            width: calc(100% - 100px);
             padding: 10px;
             font-size: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+            display: inline-block;
+        }
+        .required-text {
+            color: red;
+            font-size: 14px;
+            margin-left: 10px;
         }
         .complete-payment {
             text-align: center;
+            margin-top: 20px;
         }
         .complete-payment button {
             padding: 10px 20px;
@@ -110,8 +91,24 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .complete-payment button:hover {
-            background-color: #333;
+        .complete-payment button:disabled {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+        .checkbox-container {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+        #notification {
+            margin-top: 20px;
+            color: green;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
@@ -138,22 +135,77 @@
 
     <div class="payment-section">
         <h2>Kart Bilgileri</h2>
-        <label for="cardNumber">Kart Numarası:</label>
-        <input type="text" id="cardNumber" placeholder="Kart numarasını girin">
-        <label for="cvv">CVV:</label>
-        <input type="text" id="cvv" placeholder="CVV kodunu girin">
-        <label for="cardName">Kart Sahibi Adı:</label>
-        <input type="text" id="cardName" placeholder="Adınızı girin">
-        <label for="expiryDate">Son Kullanma Tarihi:</label>
-        <input type="text" id="expiryDate" placeholder="MM/YYYY">
-        <div class="complete-payment">
-            <button onclick="completePayment()">Ödemeyi Tamamla</button>
+
+        <label for="cardNumber">
+            Kart Numarası: (Zorunludur)
+        </label>
+        <input type="text" id="cardNumber" placeholder="Kart numarasını girin" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkForm();">
+        
+        <label for="cvv">
+            CVV: (Zorunludur)
+        </label>
+        <input type="text" id="cvv" placeholder="CVV kodunu girin" maxlength="3" oninput="this.value = this.value.replace(/[^0-9]/g, ''); checkForm();">
+        
+        <label for="cardName">
+            Kart Sahibi Adı: (Zorunludur)
+        </label>
+        <input type="text" id="cardName" placeholder="Adınızı girin" oninput="checkForm();">
+        
+        <label>
+            Son Kullanma Tarihi: (Zorunludur)
+        </label>
+        <div style="display: flex; gap: 10px;">
+            <select id="expiryMonth" onchange="checkForm();">
+                <option value="">Ay</option>
+                <% for (let i = 1; i <= 12; i++) { %>
+                    <option value="<%= i %>"><%= i %></option>
+                <% } %>
+            </select>
+            <select id="expiryYear" onchange="checkForm();">
+                <option value="">Yıl</option>
+                <% const currentYear = new Date().getFullYear(); %>
+                <% for (let i = 0; i < 10; i++) { %>
+                    <option value="<%= currentYear + i %>"><%= currentYear + i %></option>
+                <% } %>
+            </select>
         </div>
+        
+        <div class="checkbox-container">
+            <input type="checkbox" id="saveCardInfo">
+            <label for="saveCardInfo">Kart bilgilerini kaydet.</label>
+        </div>
+
+        <div class="complete-payment">
+            <button id="paymentButton" type="button" onclick="completePayment()" disabled>Ödemeyi Tamamla</button>
+            <p>Bütün alanlar doldurulunca butona tıklanabilir.</p>
+        </div>
+        <div id="notification">Ödeme başarıyla tamamlandı!</div>
     </div>
 
     <script>
+        function checkForm() {
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            const cardName = document.getElementById('cardName').value.trim();
+            const expiryMonth = document.getElementById('expiryMonth').value.trim();
+            const expiryYear = document.getElementById('expiryYear').value.trim();
+
+            const paymentButton = document.getElementById('paymentButton');
+            if (cardNumber && cvv && cardName && expiryMonth && expiryYear) {
+                paymentButton.disabled = false;
+            } else {
+                paymentButton.disabled = true;
+            }
+        }
+
         function completePayment() {
-            alert('Ödeme işlemi tamamlandı!');
+            fetch('/clear-cart', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('notification').style.display = 'block';
+                    }
+                });
         }
     </script>
 </body>

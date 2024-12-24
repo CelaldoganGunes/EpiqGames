@@ -149,7 +149,10 @@ app.get('/cart', (req, res) => {
     }
 });
 
-
+app.post('/clear-cart', (req, res) => {
+    cart.length = 0; // Sepeti temizle
+    res.json({ success: true });
+});
 
 // Start server
 app.listen(PORT, () => {
